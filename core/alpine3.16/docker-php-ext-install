@@ -16,7 +16,7 @@ if [ -z "$srcExists" ]; then
 	touch /usr/src/php/.docker-delete-me
 fi
 
-cd /usr/src/php/ext
+cd /usr/src/php/$PHP_BACKPORT_VERSION/ext
 
 usage() {
 	echo "usage: $0 [-jN] [--ini-name file.ini] ext-name [ext-name ...]"

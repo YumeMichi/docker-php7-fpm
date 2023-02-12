@@ -11,6 +11,7 @@ FROM alpine:3.16
 ENV PHPIZE_DEPS \
 		autoconf \
 		dpkg-dev dpkg \
+		bison \
 		file \
 		g++ \
 		gcc \
@@ -24,6 +25,7 @@ RUN apk add --no-cache \
 		ca-certificates \
 		curl \
 		tar \
+		unzip \
 		xz \
 # https://github.com/docker-library/php/issues/494
 		openssl
@@ -55,35 +57,17 @@ ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_
 ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -pie"
 
-ENV GPG_KEYS 42670A7FE4D0441C8E4632349E4FDC074A4EF02D 5A52880781F755608BF815FC910DEB46F53EA312
-
-ENV PHP_VERSION 7.4.33
-ENV PHP_URL="https://www.php.net/distributions/php-7.4.33.tar.xz" PHP_ASC_URL="https://www.php.net/distributions/php-7.4.33.tar.xz.asc"
-ENV PHP_SHA256="924846abf93bc613815c55dd3f5809377813ac62a9ec4eb3778675b82a27b927"
+ENV PHP_BACKPORT_VERSION="php-src-security-PHP-7.4-security-backports"
+ENV PHP_URL="https://github.com/remicollet/php-src-security/archive/refs/heads/PHP-7.4-security-backports.zip"
 
 RUN set -eux; \
 	\
-	apk add --no-cache --virtual .fetch-deps gnupg; \
+	apk add --no-cache --virtual .fetch-deps; \
 	\
 	mkdir -p /usr/src; \
 	cd /usr/src; \
 	\
-	curl -fsSL -o php.tar.xz "$PHP_URL"; \
-	\
-	if [ -n "$PHP_SHA256" ]; then \
-		echo "$PHP_SHA256 *php.tar.xz" | sha256sum -c -; \
-	fi; \
-	\
-	if [ -n "$PHP_ASC_URL" ]; then \
-		curl -fsSL -o php.tar.xz.asc "$PHP_ASC_URL"; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		for key in $GPG_KEYS; do \
-			gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
-		done; \
-		gpg --batch --verify php.tar.xz.asc php.tar.xz; \
-		gpgconf --kill all; \
-		rm -rf "$GNUPGHOME"; \
-	fi; \
+	curl -fsSL -o php.zip "$PHP_URL"; \
 	\
 	apk del --no-network .fetch-deps
 
@@ -116,8 +100,9 @@ RUN set -eux; \
 		LDFLAGS="$PHP_LDFLAGS" \
 	; \
 	docker-php-source extract; \
-	cd /usr/src/php; \
+	cd /usr/src/php/"$PHP_BACKPORT_VERSION"; \
 	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
+	./buildconf --force; \
 	./configure \
 		--build="$gnuArch" \
 		--with-config-file-path="$PHP_INI_DIR" \
