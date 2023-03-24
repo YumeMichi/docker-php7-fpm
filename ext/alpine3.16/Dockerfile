@@ -1,14 +1,14 @@
-FROM php:7.4.33-fpm-alpine3.16
+FROM yume/phpfpm:7.4.33-core-alpine3.16
 
-LABEL Maintainer="Jose Quintana <git.io/joseluisq>" \
+LABEL Maintainer="Yuan Si <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
 
 # Composer - https://getcomposer.org/download/
-ARG COMPOSER_VERSION="2.4.4"
-ARG COMPOSER_SUM="c252c2a2219956f88089ffc242b42c8cb9300a368fd3890d63940e4fc9652345"
+ARG COMPOSER_VERSION="2.5.3"
+ARG COMPOSER_SUM="2e1061821951c6a5ece033a025d06296d4a1d056fee2f4bebd35815cf4b1b0f9"
 
 # Swoole - https://github.com/swoole/swoole-src
-ARG SWOOLE_VERSION="4.8.12"
+ARG SWOOLE_VERSION="4.8.13"
 
 # Install dependencies
 RUN set -eux \
@@ -19,6 +19,7 @@ RUN set -eux \
         freetype \
         gettext \
         gmp \
+        icu-data-full \
         icu-libs \
         imagemagick \
         imap \
@@ -42,14 +43,13 @@ RUN set -eux \
         tzdata \
         unixodbc \
         vips \
-        yaml
-
+        yaml \
+\
 #############################################
 ### Install and enable PHP extensions
 #############################################
-
+\
 # Development dependencies
-RUN set -eux \
     && apk add --no-cache --virtual .build-deps \
         autoconf \
         bzip2-dev \
@@ -77,7 +77,6 @@ RUN set -eux \
         libxpm-dev \
         libxslt-dev \
         libzip-dev \
-        linux-headers \
         openssl-dev \
         pcre-dev \
         pkgconf \
@@ -91,11 +90,12 @@ RUN set -eux \
 \
 # Workaround for rabbitmq linking issue
     && ln -s /usr/lib /usr/local/lib64 \
+\
 # Enable ffi if it exists
     && set -eux \
-        && if [ -f /usr/local/etc/php/conf.d/docker-php-ext-ffi.ini ]; then \
-            echo "ffi.enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-ffi.ini; \
-        fi \
+    && if [ -f /usr/local/etc/php/conf.d/docker-php-ext-ffi.ini ]; then \
+        echo "ffi.enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-ffi.ini; \
+    fi \
 \
 ################################
 # Install PHP extensions
@@ -114,7 +114,7 @@ RUN set -eux \
     && true \
 \
 # Install amqp
-    && echo "/usr" | pecl install amqp \
+    && pecl install amqp \
     && docker-php-ext-enable amqp \
     && true \
 \
@@ -219,11 +219,11 @@ RUN set -eux \
 # ONLY 64-bit targets
     && if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "aarch64" ]; then \
     # Install sqlsrv
-        pecl install sqlsrv; \
+        pecl install sqlsrv-5.10.1; \
         docker-php-ext-enable sqlsrv; \
         true; \
     # Install pdo_sqlsrv
-        pecl install pdo_sqlsrv; \
+        pecl install pdo_sqlsrv-5.10.1; \
         docker-php-ext-enable pdo_sqlsrv; \
         true; \
     fi \
@@ -248,12 +248,12 @@ RUN set -eux \
     && true \
 \
 # Install ssh2
-    && pecl install ssh2-1.2 \
+    && pecl install ssh2-1.3.1 \
     && docker-php-ext-enable ssh2 \
     && true \
 \
 # Install sockets, sysvmsg, sysvsem, sysvshm (also needed by swoole)
-    && docker-php-ext-install -j$(nproc) \
+    && CFLAGS="${CFLAGS:=} -D_GNU_SOURCE" docker-php-ext-install -j$(nproc) \
         sockets \
         sysvmsg \
         sysvsem \
@@ -262,9 +262,9 @@ RUN set -eux \
     && true \
 \
 # Install swoole
-    && mkdir /usr/src/php/ext/swoole \
+    && mkdir /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
     && curl -Lo swoole.tar.gz https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz \
-    && tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole \
+    && tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
     && docker-php-ext-configure swoole \
             --enable-mysqlnd \
             --enable-sockets \
@@ -303,19 +303,18 @@ RUN set -eux \
 # Clean up build packages
     && docker-php-source delete \
     && apk del .build-deps \
-    && true
-
-RUN set -eux \
+    && rm -rf /usr/src/php.zip \
+    && true \
+\
 # Fix php.ini settings for enabled extensions
     && chmod +x "$(php -r 'echo ini_get("extension_dir");')"/* \
 # Shrink binaries
     && (find /usr/local/bin -type f -print0 | xargs -n1 -0 strip --strip-all -p 2>/dev/null || true) \
     && (find /usr/local/lib -type f -print0 | xargs -n1 -0 strip --strip-all -p 2>/dev/null || true) \
     && (find /usr/local/sbin -type f -print0 | xargs -n1 -0 strip --strip-all -p 2>/dev/null || true) \
-    && true
-
+    && true \
+\
 # Install Composer
-RUN set -eux \
     && curl -LO "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" \
     && echo "${COMPOSER_SUM}  composer.phar" | sha256sum -c - \
     && chmod +x composer.phar \
@@ -324,9 +323,9 @@ RUN set -eux \
     && true
 
 # Copy PHP-FPM configuration files
-COPY 7.4-fpm/php-fpm.tmpl.conf /var/data/php-fpm/php-fpm.tmpl.conf
-COPY 7.4-fpm/www.tmpl.conf /var/data/php-fpm/www.tmpl.conf
-COPY 7.4-fpm/php.tmpl.ini /var/data/php-fpm/default-php.tmpl.ini
+COPY php-fpm.tmpl.conf /var/data/php-fpm/php-fpm.tmpl.conf
+COPY www.tmpl.conf /var/data/php-fpm/www.tmpl.conf
+COPY php.tmpl.ini /var/data/php-fpm/default-php.tmpl.ini
 
 RUN set -eux \
 # PHP-FPM templates directory
@@ -354,8 +353,8 @@ RUN set -eux \
     && true
 
 # Copy util scripts
-COPY 7.4-fpm/envsubst.sh /envsubst.sh
-COPY 7.4-fpm/entrypoint.sh /entrypoint.sh
+COPY envsubst.sh /envsubst.sh
+COPY entrypoint.sh /entrypoint.sh
 
 STOPSIGNAL SIGQUIT
 
@@ -366,9 +365,9 @@ CMD ["php-fpm"]
 
 
 # Metadata
-LABEL org.opencontainers.image.vendor="Jose Quintana" \
-    org.opencontainers.image.url="https://github.com/joseluisq/alpine-php-fpm" \
+LABEL org.opencontainers.image.vendor="Yuan Si" \
+    org.opencontainers.image.url="https://github.com/YumeMichi/alpine-php-fpm" \
     org.opencontainers.image.title="PHP-FPM v7.4 Alpine" \
     org.opencontainers.image.description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux." \
     org.opencontainers.image.version="$PHP_VERSION" \
-    org.opencontainers.image.documentation="https://github.com/joseluisq/alpine-php-fpm"
+    org.opencontainers.image.documentation="https://github.com/YumeMichi/alpine-php-fpm"
