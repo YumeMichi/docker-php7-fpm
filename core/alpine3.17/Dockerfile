@@ -6,6 +6,10 @@
 
 FROM alpine:3.17
 
+# mirror
+RUN set -eux; \
+    sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+
 # dependencies required for running "phpize"
 # these get automatically installed and removed by "docker-php-ext-*" (unless they're already installed)
 ENV PHPIZE_DEPS \
@@ -24,11 +28,18 @@ ENV PHPIZE_DEPS \
 RUN apk add --no-cache \
 		ca-certificates \
 		curl \
+		proxychains-ng \
 		tar \
 		unzip \
 		xz \
 # https://github.com/docker-library/php/issues/494
 		openssl
+
+# proxy
+RUN set -eux; \
+	grep -Ev "^$|#|socks" /etc/proxychains/proxychains.conf > /etc/proxychains/proxychains.conf.temp; \
+	mv /etc/proxychains/proxychains.conf.temp /etc/proxychains/proxychains.conf; \
+	echo "socks5 172.17.0.1 1080" >> /etc/proxychains/proxychains.conf
 
 # ensure www-data user exists
 RUN set -eux; \
@@ -68,7 +79,7 @@ RUN set -eux; \
 	mkdir -p /usr/src; \
 	cd /usr/src; \
 	\
-	curl -fsSL -o php.zip "$PHP_URL"; \
+	proxychains -q curl -fsSL -o php.zip "$PHP_URL"; \
 	\
 	apk del --no-network .fetch-deps
 

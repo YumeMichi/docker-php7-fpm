@@ -116,12 +116,12 @@ RUN set -eux \
     && true \
 \
 # Install amqp
-    && pecl install amqp \
+    && proxychains -q pecl install amqp \
     && docker-php-ext-enable amqp \
     && true \
 \
 # Install apcu
-    && pecl install apcu \
+    && proxychains -q pecl install apcu \
     && docker-php-ext-enable apcu \
     && true \
 \
@@ -151,7 +151,7 @@ RUN set -eux \
     && true \
 \
 # Install imagick
-    && pecl install imagick \
+    && proxychains -q pecl install imagick \
     && docker-php-ext-enable imagick \
     && true \
 \
@@ -160,7 +160,7 @@ RUN set -eux \
     && true \
 \
 # Install mcrypt
-    && pecl install mcrypt \
+    && proxychains -q pecl install mcrypt \
     && docker-php-ext-enable mcrypt \
     && true \
 \
@@ -170,27 +170,27 @@ RUN set -eux \
     && true \
 \
 # Install igbinary
-    && pecl install igbinary \
+    && proxychains -q pecl install igbinary \
     && docker-php-ext-enable igbinary \
     && true \
 \
 # Install msgpack
-    && pecl install msgpack \
+    && proxychains -q pecl install msgpack \
     && docker-php-ext-enable msgpack \
     && true \
 \
 # Install memcached
-    && pecl install memcached \
+    && proxychains -q pecl install memcached \
     && docker-php-ext-enable memcached \
     && true \
 \
 # Install memcache
-    && pecl install memcache-4.0.5.2 \
+    && proxychains -q pecl install memcache-4.0.5.2 \
     && docker-php-ext-enable memcache \
     && true \
 \
 # Install mongodb
-    && pecl install mongodb \
+    && proxychains -q pecl install mongodb \
     && docker-php-ext-enable mongodb \
     && true \
 \
@@ -199,7 +199,7 @@ RUN set -eux \
     && true \
 \
 # Install oauth
-    && pecl install oauth \
+    && proxychains -q pecl install oauth \
     && docker-php-ext-enable oauth \
     && true \
 \
@@ -221,7 +221,7 @@ RUN set -eux \
     && true \
 \
 # Install phalcon
-    && pecl install phalcon \
+    && proxychains -q pecl install phalcon \
     && docker-php-ext-enable phalcon \
     && true \
 \
@@ -236,27 +236,27 @@ RUN set -eux \
 # ONLY 64-bit targets
     && if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "aarch64" ]; then \
     # Install sqlsrv
-        pecl install sqlsrv-5.10.1; \
+        proxychains -q pecl install sqlsrv-5.10.1; \
         docker-php-ext-enable sqlsrv; \
         true; \
     # Install pdo_sqlsrv
-        pecl install pdo_sqlsrv-5.10.1; \
+        proxychains -q pecl install pdo_sqlsrv-5.10.1; \
         docker-php-ext-enable pdo_sqlsrv; \
         true; \
     fi \
 \
 # Install psr
-    && pecl install psr \
+    && proxychains -q pecl install psr \
     && docker-php-ext-enable psr \
     && true \
 \
 # Install redis
-    && pecl install redis \
+    && proxychains -q pecl install redis \
     && docker-php-ext-enable redis \
     && true \
 \
 # Install rdkafka
-    && pecl install rdkafka \
+    && proxychains -q pecl install rdkafka \
     && docker-php-ext-enable rdkafka \
     && true \
 \
@@ -265,7 +265,7 @@ RUN set -eux \
     && true \
 \
 # Install ssh2
-    && pecl install ssh2-1.3.1 \
+    && proxychains -q pecl install ssh2-1.3.1 \
     && docker-php-ext-enable ssh2 \
     && true \
 \
@@ -280,7 +280,7 @@ RUN set -eux \
 \
 # Install swoole
     && mkdir /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
-    && curl -Lo swoole.tar.gz https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz \
+    && proxychains -q curl -Lo swoole.tar.gz https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz \
     && tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
     && docker-php-ext-configure swoole \
             --enable-mysqlnd \
@@ -303,17 +303,17 @@ RUN set -eux \
     && true \
 \
 # Install yaml
-    && pecl install yaml \
+    && proxychains -q pecl install yaml \
     && docker-php-ext-enable yaml \
     && true \
 \
 # Install vips
-    && pecl install vips \
+    && proxychains -q pecl install vips \
     && docker-php-ext-enable vips \
     && true \
 \
 # Install zbar
-    && curl -Lo zbar.zip https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
+    && proxychains -q curl -Lo zbar.zip https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
     && unzip zbar.zip && cd zbar-master \
     && ./configure --prefix=/usr/local/zbar --without-gtk --without-python --without-qt --disable-video \
     && make -j$(nproc) && make install \
@@ -321,7 +321,7 @@ RUN set -eux \
 \
 # Install zbarcode
     && mkdir -p /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
-    && curl -Lo zbarcode.zip https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
+    && proxychains -q curl -Lo zbarcode.zip https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
     && unzip zbarcode.zip \
     && mv php-zbarcode-master/* /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
     && docker-php-ext-configure zbarcode \
@@ -349,7 +349,7 @@ RUN set -eux \
     && true \
 \
 # Install Composer
-    && curl -LO "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" \
+    && proxychains -q curl -LO "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" \
     && echo "${COMPOSER_SUM}  composer.phar" | sha256sum -c - \
     && chmod +x composer.phar \
     && mv composer.phar /usr/local/bin/composer \
