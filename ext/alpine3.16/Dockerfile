@@ -28,6 +28,7 @@ RUN set -eux \
         libintl \
         libjpeg-turbo \
         libmcrypt \
+        libmemcached \
         libpng \
         libpq \
         librdkafka \
@@ -69,6 +70,7 @@ RUN set -eux \
         libc-dev \
         libjpeg-turbo-dev \
         libmcrypt-dev \
+        libmemcached-dev \
         libpng-dev \
         librdkafka-dev \
         libssh2-dev \
@@ -165,6 +167,21 @@ RUN set -eux \
 # Install xmlrpc
     && docker-php-ext-configure xmlrpc --with-iconv-dir=/usr \
     && docker-php-ext-install -j$(nproc) xmlrpc \
+    && true \
+\
+# Install igbinary
+    && pecl install igbinary \
+    && docker-php-ext-enable igbinary \
+    && true \
+\
+# Install msgpack
+    && pecl install msgpack \
+    && docker-php-ext-enable msgpack \
+    && true \
+\
+# Install memcached
+    && pecl install memcached \
+    && docker-php-ext-enable memcached \
     && true \
 \
 # Install memcache
