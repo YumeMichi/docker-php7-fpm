@@ -312,6 +312,23 @@ RUN set -eux \
     && docker-php-ext-enable vips \
     && true \
 \
+# Install zbar
+    && curl -Lo zbar.zip https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
+    && unzip zbar.zip && cd zbar-master \
+    && ./configure --prefix=/usr/local/zbar --without-gtk --without-python --without-qt --disable-video \
+    && make -j$(nproc) && make install \
+    && ln -s /usr/local/zbar/lib/pkgconfig/zbar.pc /usr/lib/pkgconfig/zbar.pc \
+\
+# Install zbarcode
+    && mkdir -p /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
+    && curl -Lo zbarcode.zip https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
+    && unzip zbarcode.zip \
+    && mv php-zbarcode-master/* /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
+    && docker-php-ext-configure zbarcode \
+    && docker-php-ext-install -j$(nproc) zbarcode \
+    && rm -rf zbarcode.zip \
+    && true \
+\
 # Install zip
     && docker-php-ext-configure zip --with-zip \
     && docker-php-ext-install -j$(nproc) zip \
