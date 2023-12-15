@@ -103,6 +103,8 @@ RUN set -eux; \
 		CFLAGS="$PHP_CFLAGS" \
 		CPPFLAGS="$PHP_CPPFLAGS" \
 		LDFLAGS="$PHP_LDFLAGS" \
+# https://github.com/php/php-src/blob/dca8d5565b947270a29f232bc54efd9df3b92b94/configure.ac#L1327-L1331
+		PHP_UNAME='Linux - Docker' \
 	; \
 	docker-php-source extract; \
 	cd /usr/src/php/"$PHP_BACKPORT_VERSION"; \
