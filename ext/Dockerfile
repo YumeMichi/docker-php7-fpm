@@ -220,11 +220,6 @@ RUN set -eux \
     && docker-php-ext-install -j$(nproc) pcntl \
     && true \
 \
-# Install phalcon
-    && pecl install phalcon \
-    && docker-php-ext-enable phalcon \
-    && true \
-\
 # Install pdo_pgsql
     && docker-php-ext-install -j$(nproc) pdo_pgsql \
     && true \
