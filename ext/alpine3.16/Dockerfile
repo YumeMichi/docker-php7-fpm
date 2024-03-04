@@ -400,8 +400,8 @@ CMD ["php-fpm"]
 
 # Metadata
 LABEL org.opencontainers.image.vendor="Yuan Si" \
-    org.opencontainers.image.url="https://github.com/YumeMichi/alpine-php-fpm" \
+    org.opencontainers.image.url="https://github.com/YumeMichi/docker-php7-fpm" \
     org.opencontainers.image.title="PHP-FPM v7.4 Alpine" \
     org.opencontainers.image.description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux." \
     org.opencontainers.image.version="$PHP_VERSION" \
-    org.opencontainers.image.documentation="https://github.com/YumeMichi/alpine-php-fpm"
+    org.opencontainers.image.documentation="https://github.com/YumeMichi/docker-php7-fpm"
