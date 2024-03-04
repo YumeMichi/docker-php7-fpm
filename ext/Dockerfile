@@ -8,7 +8,7 @@ ARG COMPOSER_VERSION="2.7.1"
 ARG COMPOSER_SUM="1ffd0be3f27e237b1ae47f9e8f29f96ac7f50a0bd9eef4f88cdbe94dd04bfff0"
 
 # Swoole - https://github.com/swoole/swoole-src
-ARG SWOOLE_VERSION="5.1.2"
+ARG SWOOLE_VERSION="4.8.13"
 
 # Install dependencies
 RUN set -eux \
