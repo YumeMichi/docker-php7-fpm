@@ -275,7 +275,7 @@ RUN set -eux \
 \
 # Install swoole
     && mkdir /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
-    && curl -Lo swoole.tar.gz https://gh-proxy.com/https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz \
+    && curl -Lo swoole.tar.gz https://mirror.ghproxy.com/https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz \
     && tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
     && docker-php-ext-configure swoole \
             --enable-mysqlnd \
@@ -308,7 +308,7 @@ RUN set -eux \
     && true \
 \
 # Install zbar
-    && curl -Lo zbar.zip https://gh-proxy.com/https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
+    && curl -Lo zbar.zip https://mirror.ghproxy.com/https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
     && unzip zbar.zip && cd zbar-master \
     && ./configure --prefix=/usr/local/zbar --without-gtk --without-python --without-qt --disable-video \
     && make -j$(nproc) && make install \
@@ -316,7 +316,7 @@ RUN set -eux \
 \
 # Install zbarcode
     && mkdir -p /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
-    && curl -Lo zbarcode.zip https://gh-proxy.com/https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
+    && curl -Lo zbarcode.zip https://mirror.ghproxy.com/https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
     && unzip zbarcode.zip \
     && mv php-zbarcode-master/* /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
     && docker-php-ext-configure zbarcode \
