@@ -3,9 +3,9 @@ FROM yume/php-fpm:7.4-core-a634d3f5169c
 LABEL Maintainer="Yuan Si <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
 
-# Composer - https://getcomposer.org/download/
-ARG COMPOSER_VERSION="2.7.1"
-ARG COMPOSER_SUM="1ffd0be3f27e237b1ae47f9e8f29f96ac7f50a0bd9eef4f88cdbe94dd04bfff0"
+# Composer LTS - https://getcomposer.org/download/
+ARG COMPOSER_VERSION="latest-stable"
+ARG COMPOSER_SUM="aab940cd53d285a54c50465820a2080fcb7182a4ba1e5f795abfb10414a4b4be"
 
 # Swoole - https://github.com/swoole/swoole-src
 ARG SWOOLE_VERSION="4.8.13"
