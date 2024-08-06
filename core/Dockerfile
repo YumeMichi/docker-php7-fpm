@@ -22,7 +22,7 @@ ENV PHPIZE_DEPS \
 
 # Setup mirrors
 RUN set -eux; \
-	sed -i 's|dl-cdn.alpinelinux.org|mirrors.aliyun.com|g' /etc/apk/repositories
+	sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 
 # persistent / runtime deps
 RUN apk add --no-cache \
