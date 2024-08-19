@@ -1,6 +1,6 @@
 FROM yume/php-fpm:7.4-core-a634d3f5169c
 
-LABEL Maintainer="Yuan Si <do4suki@gmail.com>" \
+LABEL Maintainer="Sean Du <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
 
 # Composer LTS - https://getcomposer.org/download/
@@ -394,7 +394,7 @@ CMD ["php-fpm"]
 
 
 # Metadata
-LABEL org.opencontainers.image.vendor="Yuan Si" \
+LABEL org.opencontainers.image.vendor="Sean Du" \
     org.opencontainers.image.url="https://github.com/YumeMichi/docker-php7-fpm" \
     org.opencontainers.image.title="PHP-FPM v7.4 Alpine" \
     org.opencontainers.image.description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux." \

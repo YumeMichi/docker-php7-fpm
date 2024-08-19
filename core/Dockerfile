@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.16
+FROM alpine:3.20
 
 # dependencies required for running "phpize"
 # these get automatically installed and removed by "docker-php-ext-*" (unless they're already installed)
@@ -17,6 +17,7 @@ ENV PHPIZE_DEPS \
 		gcc \
 		libc-dev \
 		make \
+		patch \
 		pkgconf \
 		re2c
 
@@ -77,6 +78,7 @@ RUN set -eux; \
 	apk del --no-network .fetch-deps
 
 COPY docker-php-source /usr/local/bin/
+COPY php-7.4.33-openssl3.patch /usr/src/
 
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
@@ -108,6 +110,7 @@ RUN set -eux; \
 	; \
 	docker-php-source extract; \
 	cd /usr/src/php/"$PHP_BACKPORT_VERSION"; \
+	patch -p1 < /usr/src/php-7.4.33-openssl3.patch; \
 	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
 	./buildconf --force; \
 	./configure \
