@@ -2626,3 +2626,78 @@ index b136729cb5..d0fd976376 100644
 -- 
 2.46.0
 
+
+From 99bf9ff617b874eeace2425a6465a5e07b4ab094 Mon Sep 17 00:00:00 2001
+From: Adam Saponara <as@php.net>
+Date: Fri, 12 Apr 2024 12:52:04 -0400
+Subject: [PATCH] ext/openssl: Add option to load legacy algorithm provider
+
+OpenSSL 3.x relegated a set of insecure algorithms to a "legacy"
+provider which is not loaded by default. Some of these algorithms
+have utility beyond encryption such as for hashing, e.g., DES[1]
+
+Add a compile-time option to load the legacy provider in 3.x. When
+enabled, also load the default provider because loading any provider
+explicitly disables auto-loading the default provider.
+
+[1] https://github.com/vitessio/vitess/blob/9e40015748ede158357bd7291f583db138abc3df/go/vt/vtgate/vindexes/hash.go#L157
+
+Closes GH-13951
+---
+ ext/openssl/config0.m4 | 10 ++++++++++
+ ext/openssl/openssl.c  |  5 +++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/ext/openssl/config0.m4 b/ext/openssl/config0.m4
+index 9714ffec17..1f281ad75c 100644
+--- a/ext/openssl/config0.m4
++++ b/ext/openssl/config0.m4
+@@ -17,6 +17,13 @@ PHP_ARG_WITH([system-ciphers],
+   [no],
+   [no])
+ 
++PHP_ARG_WITH([openssl-legacy-provider],
++  [whether to load legacy algorithm provider],
++  [AS_HELP_STRING([--with-openssl-legacy-provider],
++    [OPENSSL: Load legacy algorithm provider in addition to default provider])],
++  [no],
++  [no])
++
+ if test "$PHP_OPENSSL" != "no"; then
+   PHP_NEW_EXTENSION(openssl, openssl.c xp_ssl.c, $ext_shared)
+   PHP_SUBST(OPENSSL_SHARED_LIBADD)
+@@ -37,5 +44,8 @@ if test "$PHP_OPENSSL" != "no"; then
+   if test "$PHP_SYSTEM_CIPHERS" != "no"; then
+     AC_DEFINE(USE_OPENSSL_SYSTEM_CIPHERS,1,[ Use system default cipher list instead of hardcoded value ])
+   fi
++  if test "$PHP_OPENSSL_LEGACY_PROVIDER" != "no"; then
++    AC_DEFINE(LOAD_OPENSSL_LEGACY_PROVIDER,1,[ Load legacy algorithm provider in addition to default provider ])
++  fi
+   AC_CHECK_FUNCS([RAND_egd])
+ fi
+diff --git a/ext/openssl/openssl.c b/ext/openssl/openssl.c
+index d0fd976376..f64ff36f1b 100644
+--- a/ext/openssl/openssl.c
++++ b/ext/openssl/openssl.c
+@@ -62,6 +62,7 @@
+ #if PHP_OPENSSL_API_VERSION >= 0x30000
+ #include <openssl/core_names.h>
+ #include <openssl/param_build.h>
++#include <openssl/provider.h>
+ #endif
+ 
+ /* Common */
+@@ -1482,6 +1483,10 @@ PHP_MINIT_FUNCTION(openssl)
+ 
+ 	SSL_load_error_strings();
+ #else
++#if PHP_OPENSSL_API_VERSION >= 0x30000 && defined(LOAD_OPENSSL_LEGACY_PROVIDER)
++	OSSL_PROVIDER_load(NULL, "legacy");
++	OSSL_PROVIDER_load(NULL, "default");
++#endif
+ 	OPENSSL_init_ssl(OPENSSL_INIT_LOAD_CONFIG, NULL);
+ #endif
+ 
+-- 
+2.46.0
+

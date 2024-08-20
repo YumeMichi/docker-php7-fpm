@@ -144,6 +144,8 @@ RUN set -eux; \
 		--with-curl \
 		--with-iconv=/usr \
 		--with-openssl \
+# enable legacy legacy algorithm provider (https://github.com/php/php-src/commit/956c3c2c034bd2146dc29ec04205cb2de984a5c2)
+		--with-openssl-legacy-provider \
 		--with-readline \
 		--with-zlib \
 		\
