@@ -3,9 +3,6 @@ FROM yume/php-fpm:7.4-core-a634d3f5169c
 LABEL Maintainer="Sean Du <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
 
-# Swoole - https://github.com/swoole/swoole-src
-ARG SWOOLE_VERSION="4.8.13"
-
 # Install dependencies
 RUN set -eux \
     && apk add --no-cache \
@@ -260,29 +257,13 @@ RUN set -eux \
     && docker-php-ext-enable ssh2 \
     && true \
 \
-# Install sockets, sysvmsg, sysvsem, sysvshm (also needed by swoole)
+# Install sockets, sysvmsg, sysvsem, sysvshm
     && CFLAGS="${CFLAGS:=} -D_GNU_SOURCE" docker-php-ext-install -j$(nproc) \
         sockets \
         sysvmsg \
         sysvsem \
         sysvshm \
     && docker-php-source extract \
-    && true \
-\
-# Install swoole
-    && mkdir /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
-    && curl -Lo swoole.tar.gz https://mirror.ghproxy.com/https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz \
-    && tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/$PHP_BACKPORT_VERSION/ext/swoole \
-    && docker-php-ext-configure swoole \
-            --enable-mysqlnd \
-            --enable-sockets \
-            --enable-openssl \
-            --enable-http2 \
-            --enable-swoole-json \
-            --enable-swoole-curl \
-    && docker-php-ext-install -j$(nproc) swoole \
-    && rm -rf swoole.tar.gz $HOME/.composer/*-old.phar \
-    && docker-php-ext-enable swoole \
     && true \
 \
 # Install tidy
