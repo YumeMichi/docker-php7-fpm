@@ -3,10 +3,6 @@ FROM yume/php-fpm:7.4-core-a634d3f5169c
 LABEL Maintainer="Sean Du <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
 
-# Composer LTS - https://getcomposer.org/download/
-ARG COMPOSER_VERSION="latest-stable"
-ARG COMPOSER_SUM="aab940cd53d285a54c50465820a2080fcb7182a4ba1e5f795abfb10414a4b4be"
-
 # Swoole - https://github.com/swoole/swoole-src
 ARG SWOOLE_VERSION="4.8.13"
 
@@ -344,8 +340,8 @@ RUN set -eux \
     && true \
 \
 # Install Composer
-    && curl -LO "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" \
-    && echo "${COMPOSER_SUM}  composer.phar" | sha256sum -c - \
+    && curl -LO "https://getcomposer.org/download/latest-stable/composer.phar" \
+    && curl -Ls "https://getcomposer.org/download/latest-stable/composer.phar.sha256" | xargs -I{} echo "{} composer.phar" | sha256sum -c - \
     && chmod +x composer.phar \
     && mv composer.phar /usr/local/bin/composer \
     && composer --version \
