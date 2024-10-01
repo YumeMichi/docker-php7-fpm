@@ -63,7 +63,7 @@ ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -pie"
 
 ENV PHP_BACKPORT_VERSION="php-src-security-PHP-7.4-security-backports"
-ENV PHP_REVISION="https://github.com/remicollet/php-src-security/commit/a634d3f5169c884715d9e26ac213ecf2a25c3666"
+ENV PHP_REVISION="https://github.com/remicollet/php-src-security/commit/29065f33f37f99ba33254cb23c941647bcd7372c"
 ENV PHP_URL="https://github.com/remicollet/php-src-security/archive/refs/heads/PHP-7.4-security-backports.zip"
 
 RUN set -eux; \
@@ -144,7 +144,7 @@ RUN set -eux; \
 		--with-curl \
 		--with-iconv=/usr \
 		--with-openssl \
-# enable legacy legacy algorithm provider (https://github.com/php/php-src/commit/956c3c2c034bd2146dc29ec04205cb2de984a5c2)
+# enable legacy algorithm provider (https://github.com/php/php-src/commit/956c3c2c034bd2146dc29ec04205cb2de984a5c2)
 		--with-openssl-legacy-provider \
 		--with-readline \
 		--with-zlib \
