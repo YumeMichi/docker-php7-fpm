@@ -272,6 +272,11 @@ RUN set -eux \
     && docker-php-ext-install -j$(nproc) tidy \
     && true \
 \
+# Install uuid
+    && pecl install uuid \
+    && docker-php-ext-enable uuid \
+    && true \
+\
 # Install xsl
     && docker-php-ext-install -j$(nproc) xsl \
     && true \
