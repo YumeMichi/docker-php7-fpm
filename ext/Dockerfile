@@ -254,7 +254,9 @@ RUN set -eux \
     && true \
 \
 # Install redis
-    && pecl install redis \
+    && pecl install --configureoptions \
+        'enable-redis-igbinary="yes" enable-redis-zstd="yes" enable-redis-msgpack="yes" enable-redis-lz4="yes"' \
+        redis \
     && docker-php-ext-enable redis \
     && true \
 \
