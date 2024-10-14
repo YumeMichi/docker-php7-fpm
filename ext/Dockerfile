@@ -31,6 +31,7 @@ RUN set -eux \
         libxpm \
         libxslt \
         libzip \
+        lz4-libs \
         make \
         rabbitmq-c \
         tidyhtml \
@@ -73,6 +74,7 @@ RUN set -eux \
         libxpm-dev \
         libxslt-dev \
         libzip-dev \
+        lz4-dev \
         openssl-dev \
         pcre-dev \
         pkgconf \
@@ -152,6 +154,17 @@ RUN set -eux \
 \
 # Install intl
     && docker-php-ext-install -j$(nproc) intl \
+    && true \
+\
+# Install lz4
+    && git clone https://github.com/kjdev/php-ext-lz4 /opt/lz4 \
+    && cd /opt/lz4 \
+    && git checkout $(git tag | grep -E '^[.0-9]+$' | sort -V | tail -1) \
+    && phpize \
+    && ./configure --enable-lz4 --with-lz4-includedir=/usr \
+    && make -j$(nproc) \
+    && make install \
+    && docker-php-ext-enable lz4 \
     && true \
 \
 # Install mcrypt
