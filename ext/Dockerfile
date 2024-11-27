@@ -1,4 +1,4 @@
-FROM yume/php-fpm:7.4-core-29065f33f37f
+FROM yume/php-fpm:7.4-core-016ffd6131a6
 
 LABEL Maintainer="Sean Du <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
@@ -157,7 +157,7 @@ RUN set -eux \
     && true \
 \
 # Install lz4
-    && git clone https://github.com/kjdev/php-ext-lz4 /opt/lz4 \
+    && git clone https://mirror.ghproxy.com/https://github.com/kjdev/php-ext-lz4 /opt/lz4 \
     && cd /opt/lz4 \
     && git checkout $(git tag | grep -E '^[.0-9]+$' | sort -V | tail -1) \
     && phpize \
