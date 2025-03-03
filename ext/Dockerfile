@@ -1,7 +1,7 @@
-FROM yume/php-fpm:7.4-core-6b9f5d167352
+FROM yume/php-fpm:7.3-core-3c6b62c2c7bd
 
 LABEL Maintainer="Sean Du <do4suki@gmail.com>" \
-    Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
+    Description="PHP-FPM v7.3 with essential extensions on top of Alpine Linux."
 
 # Install dependencies
 RUN set -eux \
@@ -104,11 +104,11 @@ RUN set -eux \
 # Install gd
     && ln -s /usr/lib/$(apk --print-arch)-linux-gnu/libXpm.* /usr/lib/ \
     && docker-php-ext-configure gd \
-        --enable-gd \
-        --with-webp \
-        --with-jpeg \
-        --with-xpm \
-        --with-freetype \
+        --with-gd \
+        --with-webp-dir \
+        --with-jpeg-dir \
+        --with-xpm-dir \
+        --with-freetype-dir \
         --enable-gd-jis-conv \
     && docker-php-ext-install -j$(nproc) gd \
     && true \
@@ -199,7 +199,7 @@ RUN set -eux \
     && true \
 \
 # Install mongodb
-    && pecl install mongodb-1.20.1 \
+    && pecl install mongodb-1.16.2 \
     && docker-php-ext-enable mongodb \
     && true \
 \
@@ -257,7 +257,7 @@ RUN set -eux \
 # Install redis
     && pecl install --configureoptions \
         'enable-redis-igbinary="yes" enable-redis-zstd="yes" enable-redis-msgpack="yes" enable-redis-lz4="yes"' \
-        redis \
+        redis-5.3.7 \
     && docker-php-ext-enable redis \
     && true \
 \
@@ -325,7 +325,7 @@ RUN set -eux \
     && true \
 \
 # Install zip
-    && docker-php-ext-configure zip --with-zip \
+    && docker-php-ext-configure zip \
     && docker-php-ext-install -j$(nproc) zip \
     && true \
 \
@@ -371,7 +371,7 @@ RUN set -eux \
 # Perform PHP-FPM testing
     && echo "Performing PHP-FPM tests..." \
     && echo "date.timezone=UTC" > /usr/local/etc/php/php.ini \
-    && php -v | grep -oE 'PHP\s[.0-9]+' | grep -oE '[.0-9]+' | grep '^7.4' \
+    && php -v | grep -oE 'PHP\s[.0-9]+' | grep -oE '[.0-9]+' | grep '^7.3' \
     && /usr/local/sbin/php-fpm --test \
 \
     && PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
@@ -401,7 +401,7 @@ CMD ["php-fpm"]
 # Metadata
 LABEL org.opencontainers.image.vendor="Sean Du" \
     org.opencontainers.image.url="https://github.com/YumeMichi/docker-php7-fpm" \
-    org.opencontainers.image.title="PHP-FPM v7.4 Alpine" \
-    org.opencontainers.image.description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux." \
+    org.opencontainers.image.title="PHP-FPM v7.3 Alpine" \
+    org.opencontainers.image.description="PHP-FPM v7.3 with essential extensions on top of Alpine Linux." \
     org.opencontainers.image.version="$PHP_VERSION" \
     org.opencontainers.image.documentation="https://github.com/YumeMichi/docker-php7-fpm"

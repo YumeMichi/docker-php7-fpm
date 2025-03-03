@@ -55,9 +55,9 @@ ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_
 ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -pie"
 
-ENV PHP_BACKPORT_VERSION="php-src-security-PHP-7.4-security-backports"
-ENV PHP_REVISION="https://github.com/remicollet/php-src-security/commit/6b9f5d1673522bb3cf5d77889919084024565c7f"
-ENV PHP_URL="https://github.com/remicollet/php-src-security/archive/refs/heads/PHP-7.4-security-backports.zip"
+ENV PHP_BACKPORT_VERSION="php-src-security-PHP-7.3-security-backports"
+ENV PHP_REVISION="https://github.com/YumeMichi/php-src-security/commit/3c6b62c2c7bdd769435c004c02696043b5f74d67"
+ENV PHP_URL="https://github.com/YumeMichi/php-src-security/archive/refs/heads/PHP-7.3-security-backports.zip"
 
 RUN set -eux; \
 	\
