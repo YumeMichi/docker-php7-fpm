@@ -73,7 +73,7 @@ RUN set -eux; \
 	mkdir -p /usr/src; \
 	cd /usr/src; \
 	\
-	curl -fsSL -o php.zip "https://mirror.ghproxy.com/$PHP_URL"; \
+	curl -fsSL -o php.zip "https://gh-proxy.com/$PHP_URL"; \
 	\
 	apk del --no-network .fetch-deps
 

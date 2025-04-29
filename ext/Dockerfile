@@ -157,7 +157,7 @@ RUN set -eux \
     && true \
 \
 # Install lz4
-    && git clone https://mirror.ghproxy.com/https://github.com/kjdev/php-ext-lz4 /opt/lz4 \
+    && git clone https://gh-proxy.com/https://github.com/kjdev/php-ext-lz4 /opt/lz4 \
     && cd /opt/lz4 \
     && git checkout $(git tag | grep -E '^[.0-9]+$' | sort -V | tail -1) \
     && phpize \
@@ -307,7 +307,7 @@ RUN set -eux \
     && true \
 \
 # Install zbar
-    && curl -Lo zbar.zip https://mirror.ghproxy.com/https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
+    && curl -Lo zbar.zip https://gh-proxy.com/https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
     && unzip zbar.zip && cd zbar-master \
     && ./configure --prefix=/usr/local/zbar --without-gtk --without-python --without-qt --disable-video \
     && make -j$(nproc) && make install \
@@ -315,7 +315,7 @@ RUN set -eux \
 \
 # Install zbarcode
     && mkdir -p /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
-    && curl -Lo zbarcode.zip https://mirror.ghproxy.com/https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
+    && curl -Lo zbarcode.zip https://gh-proxy.com/https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
     && unzip zbarcode.zip \
     && mv php-zbarcode-master/* /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
     && docker-php-ext-configure zbarcode \
