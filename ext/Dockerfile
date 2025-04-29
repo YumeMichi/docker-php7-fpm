@@ -1,4 +1,4 @@
-FROM yume/php-fpm:7.4-core-016ffd6131a6
+FROM yume/php-fpm:7.4-core-8ab957ca87b4
 
 LABEL Maintainer="Sean Du <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
