@@ -63,7 +63,7 @@ ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -pie"
 
 ENV PHP_BACKPORT_VERSION="php-src-security-PHP-7.4-security-backports"
-ENV PHP_REVISION="https://github.com/remicollet/php-src-security/commit/8ab957ca87b42b808aec7fd472fbc4063073a119"
+ENV PHP_REVISION="https://github.com/remicollet/php-src-security/commit/d52bcc1e66edd421dfea1698b1f897ad26c5f15f"
 ENV PHP_URL="https://github.com/remicollet/php-src-security/archive/refs/heads/PHP-7.4-security-backports.zip"
 
 RUN set -eux; \

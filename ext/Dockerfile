@@ -1,4 +1,4 @@
-FROM yume/php-fpm:7.4-core-8ab957ca87b4
+FROM yume/php-fpm:7.4-core-d52bcc1e66ed
 
 LABEL Maintainer="Sean Du <do4suki@gmail.com>" \
     Description="PHP-FPM v7.4 with essential extensions on top of Alpine Linux."
@@ -198,7 +198,7 @@ RUN set -eux \
     && true \
 \
 # Install mongodb
-    && pecl install mongodb \
+    && pecl install mongodb-1.20.1 \
     && docker-php-ext-enable mongodb \
     && true \
 \
