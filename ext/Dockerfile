@@ -47,6 +47,7 @@ RUN set -eux \
 \
 # Development dependencies
     && apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
         autoconf \
         bzip2-dev \
         cmake \
