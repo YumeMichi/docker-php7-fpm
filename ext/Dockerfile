@@ -271,7 +271,7 @@ RUN set -eux \
     && true \
 \
 # Install ssh2
-    && pecl install ssh2 \
+    && pecl install ssh2-1.4.1 \
     && docker-php-ext-enable ssh2 \
     && true \
 \
