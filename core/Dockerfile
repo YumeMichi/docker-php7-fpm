@@ -67,7 +67,11 @@ RUN set -eux; \
 	mkdir -p /usr/src; \
 	cd /usr/src; \
 	\
+	export https_proxy=http://172.17.0.1:1082; \
+        \
 	curl -fsSL -o php.zip "$PHP_URL"; \
+        \
+	unset https_proxy; \
 	\
 	apk del --no-network .fetch-deps
 
@@ -161,6 +165,7 @@ RUN set -eux; \
 	; \
 	make -j "$(nproc)"; \
 	find -type f -name '*.a' -delete; \
+	export https_proxy=http://172.17.0.1:1082; \
 	make install; \
 	find \
 		/usr/local \
@@ -190,6 +195,7 @@ RUN set -eux; \
 	\
 # update pecl channel definitions https://github.com/docker-library/php/issues/443
 	pecl update-channels; \
+	unset https_proxy; \
 	rm -rf /tmp/pear ~/.pearrc; \
 	\
 # smoke test
