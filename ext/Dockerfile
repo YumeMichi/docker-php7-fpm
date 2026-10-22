@@ -113,59 +113,8 @@ RUN set -eux \
     && docker-php-ext-install -j$(nproc) gd \
     && true \
 \
-# Install amqp
-    && pecl install amqp \
-    && docker-php-ext-enable amqp \
-    && true \
-\
-# Install apcu
-    && pecl install apcu \
-    && docker-php-ext-enable apcu \
-    && true \
-\
-# Install gettext
-    && docker-php-ext-install -j$(nproc) gettext \
-    && true \
-\
-# Install gmp
-    && docker-php-ext-install -j$(nproc) gmp \
-    && true \
-\
 # Install bcmath
     && docker-php-ext-install -j$(nproc) bcmath \
-    && true \
-\
-# Install bz2
-    && docker-php-ext-install -j$(nproc) bz2 \
-    && true \
-\
-# Install exif
-    && docker-php-ext-install -j$(nproc) exif \
-    && true \
-\
-# Install imap
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl --with-imap \
-    && docker-php-ext-install -j$(nproc) imap \
-    && true \
-\
-# Install imagick
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
-    && true \
-\
-# Install intl
-    && docker-php-ext-install -j$(nproc) intl \
-    && true \
-\
-# Install lz4
-    && git clone https://github.com/kjdev/php-ext-lz4 /opt/lz4 \
-    && cd /opt/lz4 \
-    && git checkout $(git tag | grep -E '^[.0-9]+$' | sort -V | tail -1) \
-    && phpize \
-    && ./configure --enable-lz4 --with-lz4-includedir=/usr \
-    && make -j$(nproc) \
-    && make install \
-    && docker-php-ext-enable lz4 \
     && true \
 \
 # Install mcrypt
@@ -173,43 +122,13 @@ RUN set -eux \
     && docker-php-ext-enable mcrypt \
     && true \
 \
-# Install xmlrpc
-    && docker-php-ext-configure xmlrpc --with-iconv-dir=/usr \
-    && docker-php-ext-install -j$(nproc) xmlrpc \
-    && true \
-\
-# Install igbinary
-    && pecl install igbinary \
-    && docker-php-ext-enable igbinary \
-    && true \
-\
 # Install msgpack
     && pecl install msgpack \
     && docker-php-ext-enable msgpack \
     && true \
 \
-# Install memcached
-    && pecl install memcached \
-    && docker-php-ext-enable memcached \
-    && true \
-\
-# Install memcache
-    && pecl install memcache-4.0.5.2 \
-    && docker-php-ext-enable memcache \
-    && true \
-\
-# Install mongodb
-    && pecl install mongodb-1.20.1 \
-    && docker-php-ext-enable mongodb \
-    && true \
-\
 # Install mysqli
     && docker-php-ext-install -j$(nproc) mysqli \
-    && true \
-\
-# Install oauth
-    && pecl install oauth \
-    && docker-php-ext-enable oauth \
     && true \
 \
 # Install opcache
@@ -221,14 +140,6 @@ RUN set -eux \
     && docker-php-ext-install -j$(nproc) pdo_mysql \
     && true \
 \
-# Install pdo_dblib
-    && docker-php-ext-install -j$(nproc) pdo_dblib \
-    && true \
-\
-# Install pcntl
-    && docker-php-ext-install -j$(nproc) pcntl \
-    && true \
-\
 # Install pdo_pgsql
     && docker-php-ext-install -j$(nproc) pdo_pgsql \
     && true \
@@ -237,101 +148,20 @@ RUN set -eux \
     && docker-php-ext-install -j$(nproc) pgsql \
     && true \
 \
-# ONLY 64-bit targets
-    && if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "aarch64" ]; then \
-    # Install sqlsrv
-        pecl install sqlsrv-5.10.1; \
-        docker-php-ext-enable sqlsrv; \
-        true; \
-    # Install pdo_sqlsrv
-        pecl install pdo_sqlsrv-5.10.1; \
-        docker-php-ext-enable pdo_sqlsrv; \
-        true; \
-    fi \
-\
-# Install psr
-    && pecl install psr \
-    && docker-php-ext-enable psr \
-    && true \
-\
 # Install redis
     && pecl install --configureoptions \
-        'enable-redis-igbinary="yes" enable-redis-zstd="yes" enable-redis-msgpack="yes" enable-redis-lz4="yes"' \
+        'enable-redis-msgpack="yes"' \
         redis \
     && docker-php-ext-enable redis \
-    && true \
-\
-# Install rdkafka
-    && pecl install rdkafka \
-    && docker-php-ext-enable rdkafka \
     && true \
 \
 # Install soap
     && docker-php-ext-install -j$(nproc) soap \
     && true \
 \
-# Install ssh2
-    && pecl install ssh2-1.4.1 \
-    && docker-php-ext-enable ssh2 \
-    && true \
-\
-# Install sockets, sysvmsg, sysvsem, sysvshm
-    && CFLAGS="${CFLAGS:=} -D_GNU_SOURCE" docker-php-ext-install -j$(nproc) \
-        sockets \
-        sysvmsg \
-        sysvsem \
-        sysvshm \
-    && docker-php-source extract \
-    && true \
-\
-# Install tidy
-    && docker-php-ext-install -j$(nproc) tidy \
-    && true \
-\
-# Install uuid
-    && pecl install uuid \
-    && docker-php-ext-enable uuid \
-    && true \
-\
-# Install xsl
-    && docker-php-ext-install -j$(nproc) xsl \
-    && true \
-\
-# Install yaml
-    && pecl install yaml \
-    && docker-php-ext-enable yaml \
-    && true \
-\
-# Install vips
-    && pecl install vips \
-    && docker-php-ext-enable vips \
-    && true \
-\
-# Install zbar
-    && curl -Lo zbar.zip https://github.com/YumeMichi/zbar/archive/refs/heads/master.zip \
-    && unzip zbar.zip && cd zbar-master \
-    && ./configure --prefix=/usr/local/zbar --without-gtk --without-python --without-qt --disable-video \
-    && make -j$(nproc) && make install \
-    && ln -s /usr/local/zbar/lib/pkgconfig/zbar.pc /usr/lib/pkgconfig/zbar.pc \
-\
-# Install zbarcode
-    && mkdir -p /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
-    && curl -Lo zbarcode.zip https://github.com/YumeMichi/php-zbarcode/archive/refs/heads/master.zip \
-    && unzip zbarcode.zip \
-    && mv php-zbarcode-master/* /usr/src/php/$PHP_BACKPORT_VERSION/ext/zbarcode \
-    && docker-php-ext-configure zbarcode \
-    && docker-php-ext-install -j$(nproc) zbarcode \
-    && rm -rf zbarcode.zip \
-    && true \
-\
 # Install zip
     && docker-php-ext-configure zip --with-zip \
     && docker-php-ext-install -j$(nproc) zip \
-    && true \
-\
-# Install zstd
-    && pecl install zstd \
-    && docker-php-ext-enable zstd \
     && true \
 \
 # Clean up build packages
